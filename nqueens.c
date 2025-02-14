@@ -57,7 +57,7 @@ void printboard(int n)
         board[i][x[i]] = 'Q';
     }
 
-    printf("\nSolution:\n ");
+    printf("\nSolution:\n");
     for (int x = 0; x < n; x++)
     {
         for (int y = 0; y < n; y++)
