@@ -32,20 +32,20 @@ void findLCSCombinations(char *str1, char *str2, int i, int j, int dp[MAX][MAX],
 
         if (dp[i - 1][j] == dp[i][j]) {
             findLCSCombinations(str1, str2, i - 1, j, dp, currentLCS, index);
+            return;
         }
         if (dp[i][j - 1] == dp[i][j]) {
             findLCSCombinations(str1, str2, i, j - 1, dp, currentLCS, index);
+            return;
         }
     }
 }
 
 int main() {
     char str1[MAX], str2[MAX];
-    fgets(str1, MAX, stdin);
-    fgets(str2, MAX, stdin);
-    str1[strcspn(str1, "\n")] = '\0';
-    str2[strcspn(str2, "\n")] = '\0';
-
+    gets(str1);
+    gets(str2);
+    
     int m = strlen(str1);
     int n = strlen(str2);
     int dp[MAX][MAX];
