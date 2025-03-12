@@ -52,12 +52,11 @@ void rabinKarp(char T[], char P[], int d, int q)
     }
 }
 
-// Driver function
 int main()
 {
     char T[] = "ABCCDDAEFG";
     char P[] = "CDD";
-    int q = 101; // Prime number for mod operation
+    int q = 29;
     int d = 256;
     rabinKarp(T, P, d, q);
     return 0;
