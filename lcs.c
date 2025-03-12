@@ -4,48 +4,64 @@
 
 #define MAX 1001
 
-void computeLCSLength(char *str1, char *str2, int m, int n, int dp[MAX][MAX]) {
-    for (int i = 0; i <= m; i++) {
-        for (int j = 0; j <= n; j++) {
-            if (i == 0 || j == 0) {
+void computeLCSLength(char *str1, char *str2, int m, int n, int dp[MAX][MAX])
+{
+    for (int i = 0; i <= m; i++)
+    {
+        for (int j = 0; j <= n; j++)
+        {
+            if (i == 0 || j == 0)
+            {
                 dp[i][j] = 0;
-            } else if (str1[i - 1] == str2[j - 1]) {
+            }
+            else if (str1[i - 1] == str2[j - 1])
+            {
                 dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else {
+            }
+            else
+            {
                 dp[i][j] = (dp[i - 1][j] > dp[i][j - 1]) ? dp[i - 1][j] : dp[i][j - 1];
             }
         }
     }
 }
 
-void findLCSCombinations(char *str1, char *str2, int i, int j, int dp[MAX][MAX], char *currentLCS, int index) {
-    if (i == 0 || j == 0) {
+void findLCSCombinations(char *str1, char *str2, int i, int j, int dp[MAX][MAX], char *currentLCS, int index)
+{
+    if (i == 0 || j == 0)
+    {
         currentLCS[index] = '\0';
         printf("%s\n", currentLCS);
         return;
     }
 
-    if (str1[i - 1] == str2[j - 1]) {
+    if (str1[i - 1] == str2[j - 1])
+    {
         currentLCS[index] = str1[i - 1];
         findLCSCombinations(str1, str2, i - 1, j - 1, dp, currentLCS, index - 1);
-    } else {
+    }
+    else
+    {
 
-        if (dp[i - 1][j] == dp[i][j]) {
+        if (dp[i - 1][j] == dp[i][j])
+        {
             findLCSCombinations(str1, str2, i - 1, j, dp, currentLCS, index);
             return;
         }
-        if (dp[i][j - 1] == dp[i][j]) {
+        if (dp[i][j - 1] == dp[i][j])
+        {
             findLCSCombinations(str1, str2, i, j - 1, dp, currentLCS, index);
             return;
         }
     }
 }
 
-int main() {
+int main()
+{
     char str1[MAX], str2[MAX];
     gets(str1);
     gets(str2);
-    
+
     int m = strlen(str1);
     int n = strlen(str2);
     int dp[MAX][MAX];
