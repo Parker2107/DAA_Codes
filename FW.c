@@ -9,9 +9,10 @@ int min(int a, int b)
 void printSolution(int A[4][4])
 {
     int V = 4;
-    printf("Shortest distances between every pair of vertices:\n");
+    printf("Shortest distances between every pair of vertices:\n  |1 2 3 4 \n----------\n");
     for (int i = 0; i < V; i++)
     {
+        printf("%d |", i + 1);
         for (int j = 0; j < V; j++)
         {
             printf("%d ", A[i][j]);

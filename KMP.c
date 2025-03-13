@@ -20,6 +20,7 @@ int *prefixTable(char *p)
         }
         LPS[q] = k;
     }
+    printf("Prefix Table: ");
     for (int i = 0; i < m; i++)
     {
         printf("%d ", LPS[i]);
@@ -53,8 +54,8 @@ void matcher(char *t, char *p)
 }
 int main(void)
 {
-    char *t = "abceabcdabeabcdabcdabde";
-    char *p = "abcdabd";
+    char *t = "SAQSPAPGPGGAS";
+    char *p = "PGGA";
     matcher(t, p);
     return 1;
 }
