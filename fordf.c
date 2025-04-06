@@ -1,68 +1,42 @@
 #include <stdio.h>
 #include <limits.h>
-#include <string.h>
-#include <stdbool.h>
 
-#define V 7 // Number of vertices in the graph
+#define V 7
 
-bool bfs(int residualGraph[V][V], int source, int sink, int parent[])
+int dfs(int graph[V][V], int visited[V], int u, int sink, int flow)
 {
-    bool visited[V];
-    memset(visited, 0, sizeof(visited));
-    int queue[V], front = 0, rear = 0;
-
-    queue[rear++] = source;
-    visited[source] = true;
-    parent[source] = -1;
-
-    while (front < rear)
+    if (u == sink)
     {
-        int u = queue[front++];
-
-        for (int v = 0; v < V; v++)
+        return flow;
+    }
+    visited[u] = 1;
+    for (int v = 0; v < V; v++)
+    {
+        if (!visited[v] && graph[u][v] > 0)
         {
-            if (!visited[v] && residualGraph[u][v] > 0)
+            int minFlow = dfs(graph, visited, v, sink, (flow < graph[u][v]) ? flow : graph[u][v]);
+            if (minFlow > 0)
             {
-                queue[rear++] = v;
-                parent[v] = u;
-                visited[v] = true;
-
-                if (v == sink)
-                    return true;
+                graph[u][v] -= minFlow;
+                graph[v][u] += minFlow;
+                return minFlow;
             }
         }
     }
-    return false;
+    return 0;
 }
-
 int fordFulkerson(int graph[V][V], int source, int sink)
 {
-    int u, v;
-    int residualGraph[V][V];
-    for (u = 0; u < V; u++)
-        for (v = 0; v < V; v++)
-            residualGraph[u][v] = graph[u][v];
-
-    int parent[V];
-    int maxFlow = 0;
-
-    while (bfs(residualGraph, source, sink, parent))
+    int maxFlow = 0, flow;
+    while (1)
     {
-        int pathFlow = INT_MAX;
-        for (v = sink; v != source; v = parent[v])
+        int visited[V] = {0};
+        flow = dfs(graph, visited, source, sink, INT_MAX);
+        if (flow == 0)
         {
-            u = parent[v];
-            pathFlow = (pathFlow < residualGraph[u][v]) ? pathFlow : residualGraph[u][v];
+            break;
         }
-
-        for (v = sink; v != source; v = parent[v])
-        {
-            u = parent[v];
-            residualGraph[u][v] -= pathFlow;
-            residualGraph[v][u] += pathFlow;
-        }
-
-        maxFlow += pathFlow;
+        maxFlow += flow;
     }
     return maxFlow;
 }
@@ -78,7 +52,6 @@ int main()
         {0, 0, 3, 2, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0}};
 
-    int source = 0, sink = 6;
-    printf("The maximum possible flow is %d\n", fordFulkerson(graph, source, sink));
+    printf("The maximum possible flow is %d\n", fordFulkerson(graph, 0, V - 1));
     return 0;
 }
