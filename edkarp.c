@@ -5,7 +5,8 @@
 
 #define V 6 // Number of vertices in the graph
 
-bool bfs(int graph[V][V], int src, int sink, int parent[])
+// Breadth-First Search to find if there is a path from source to sink
+bool bfs(int rGraph[V][V], int src, int sink, int parent[])
 {
     bool visited[V];
     memset(visited, 0, sizeof(visited));
@@ -21,7 +22,7 @@ bool bfs(int graph[V][V], int src, int sink, int parent[])
 
         for (int v = 0; v < V; v++)
         {
-            if (!visited[v] && graph[u][v] > 0)
+            if (!visited[v] && rGraph[u][v] > 0)
             {
                 queue[rear++] = v;
                 parent[v] = u;
@@ -35,44 +36,56 @@ bool bfs(int graph[V][V], int src, int sink, int parent[])
     return false;
 }
 
-int edmondsKarp(int graph[V][V], int src, int sink)
+// Edmonds-Karp implementation of Ford-Fulkerson
+int edmondsKarp(int graph[V][V], int source, int sink)
 {
-    int residualGraph[V][V];
-    memcpy(residualGraph, graph, sizeof(residualGraph));
+    int u, v;
 
-    int parent[V];
+    // Create residual graph
+    int rGraph[V][V];
+    for (u = 0; u < V; u++)
+        for (v = 0; v < V; v++)
+            rGraph[u][v] = graph[u][v];
+
+    int parent[V]; // Stores path
     int maxFlow = 0;
 
-    while (bfs(residualGraph, src, sink, parent))
+    // Augment the flow while there is a path from source to sink
+    while (bfs(rGraph, source, sink, parent))
     {
-        int pathFlow = INT_MAX;
-
-        for (int v = sink; v != src; v = parent[v])
+        // Find minimum residual capacity along the path
+        int path_flow = INT_MAX;
+        for (v = sink; v != source; v = parent[v])
         {
-            int u = parent[v];
-            pathFlow = (pathFlow < residualGraph[u][v]) ? pathFlow : residualGraph[u][v];
+            u = parent[v];
+            if (rGraph[u][v] < path_flow)
+                path_flow = rGraph[u][v];
         }
 
-        for (int v = sink; v != src; v = parent[v])
+        // Update residual capacities
+        for (v = sink; v != source; v = parent[v])
         {
-            int u = parent[v];
-            residualGraph[u][v] -= pathFlow;
-            residualGraph[v][u] += pathFlow;
+            u = parent[v];
+            rGraph[u][v] -= path_flow;
+            rGraph[v][u] += path_flow;
         }
 
-        maxFlow += pathFlow;
+        // Add path flow to overall flow
+        maxFlow += path_flow;
     }
+
     return maxFlow;
 }
 
 int main()
 {
-    int graph[V][V] = {{0, 15, 12, 0, 0, 0},
-                       {0, 0, 0, 10, 0, 0},
-                       {0, 10, 0, 5, 0, 0},
-                       {0, 0, 0, 0, 8, 8},
-                       {0, 0, 6, 0, 0, 13},
-                       {0, 0, 0, 0, 0, 0}};
+    int graph[V][V] = {
+        {0, 15, 12, 0, 0, 0},
+        {0, 0, 0, 10, 0, 0},
+        {0, 10, 0, 5, 0, 0},
+        {0, 0, 0, 0, 8, 8},
+        {0, 0, 6, 0, 0, 13},
+        {0, 0, 0, 0, 0, 0}};
 
     int src = 0, sink = 5;
     printf("The maximum possible flow is %d\n", edmondsKarp(graph, src, sink));
