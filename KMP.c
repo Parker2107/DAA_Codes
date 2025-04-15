@@ -12,7 +12,7 @@ int *prefixTable(char *p)
     {
         while (k > 0 && p[k] != p[q])
         {
-            k = LPS[k];
+            k = LPS[k - 1];
         }
         if (p[k] == p[q])
         {
